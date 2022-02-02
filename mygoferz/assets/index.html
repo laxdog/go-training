@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <title>Your orders</title>
+</head>
+
+<body>
+  <h1>Your orders</h1>
+  <!--
+    This section of the document specifies the table that will
+    be used to display the list of orders and their description
+   -->
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Date</th>
+    </tr>
+    <td>Battle axe</td>
+    <td>Useful for killing people</td>
+    <td>12/12/2021</td>
+    </tr>
+  </table>
+  <br/>
+
+  <!--
+    This section contains the form, that will be used to hit the
+    `POST /order` API that we will build in the next section
+   -->
+  <form action="/order" method="post">
+    Name:         <input type="text" name="name"> <br/>
+    Description:  <input type="text" name="description"> <br/>
+    Date:         <input type="text" name="date"> <br/>
+    <input type="submit" value="Submit">
+  </form>
+
+  <!--
+    Finally, the last section is the script that will
+    run on each page load to fetch the list of orders
+    and add them to our existing table
+   -->
+
+  <div id="test">Here</div>
+  <script>
+    orderTable = document.querySelector("table")
+
+    /*
+    Use the browsers `fetch` API to make a GET call to /order
+    We expect the response to be a JSON list of orders, of the
+    form :
+    [
+      {"name":"...","description":"...", "date":"..."},
+      {"name":"...","description":"...", "date":"..."} 
+    ]
+    */
+    fetch("/order")
+      .then(response => response.json())
+      .then(orderList => {
+        var element = document.getElementById("test");
+        //Once we fetch the list, we iterate over it
+        orderList.forEach(order => {
+          element.innerHTML = order.name;
+          // Create the table row
+          row = document.createElement("tr")
+
+          // Create the table data elements for the name description
+          // and date columns
+          name1 = document.createElement("td")
+          name1.innerHTML = order.name
+          description = document.createElement("td")
+          description.innerHTML = order.description
+          date = document.createElement("td")
+          date.innerHTML = order.date
+
+          // Add the data elements to the row
+          row.appendChild(name1)
+          row.appendChild(description)
+          row.appendChild(date)
+          // Finally, add the row element to the table itself
+          orderTable.appendChild(row)
+        })
+      })
+  </script>
+</body>
